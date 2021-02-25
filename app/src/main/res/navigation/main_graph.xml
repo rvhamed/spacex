@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/main_graph"
+    app:startDestination="@id/spaceListFragment">
+
+    <fragment
+        android:id="@+id/spaceListFragment"
+        android:name="dynamo.hamedrahimvand.spacex.ui.main.space.SpaceListFragment"
+        android:label="SpaceListFragment" >
+        <action
+            android:id="@+id/action_spaceListFragment_to_spaceDetailsFragment"
+            app:destination="@id/spaceDetailsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/spaceDetailsFragment"
+        android:name="dynamo.hamedrahimvand.spacex.ui.main.space.SpaceDetailsFragment"
+        android:label="SpaceDetailsFragment" >
+        <argument
+            android:name="spaceId"
+            app:argType="integer" />
+    </fragment>
+
+</navigation>

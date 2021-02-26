@@ -34,7 +34,4 @@ abstract class DomainModule {
     @Binds
     abstract fun bindCloudDataSource(cloudDataSourceImpl: CloudDataSourceImpl): CloudDataSource
 
-    @Singleton
-    @Binds
-    abstract fun bindApis(): Apis
 }

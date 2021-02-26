@@ -7,6 +7,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import dynamo.hamedrahimvand.spacex.R
 import dynamo.hamedrahimvand.spacex.common.base.BaseFragment
 import dynamo.hamedrahimvand.spacex.common.delegates.viewBinding
+import dynamo.hamedrahimvand.spacex.common.extensions.log
 import dynamo.hamedrahimvand.spacex.databinding.FragmentSpaceListBinding
 
 /**
@@ -20,9 +21,17 @@ class SpaceListFragment : BaseFragment<SpaceListViewModel>() {
     override val viewId: Int = R.layout.fragment_space_list
     private val binding by viewBinding(FragmentSpaceListBinding::bind)
 
-    override fun setupView(){
-        binding.btnNext.setOnClickListener{
-            navigateTo(SpaceListFragmentDirections.actionSpaceListFragmentToSpaceDetailsFragment(0))
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.launchesLiveData.observe(viewLifecycleOwner) { resource ->
+            resource.log(resource.toString())
+        }
+    }
+
+    override fun setupView() {
+        binding.btnNext.setOnClickListener {
+            viewModel.loadLaunches()
+//            navigateTo(SpaceListFragmentDirections.actionSpaceListFragmentToSpaceDetailsFragment(0))
         }
     }
 }

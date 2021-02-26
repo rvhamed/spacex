@@ -8,7 +8,5 @@ import javax.inject.Inject
  *@since 2/25/21
  */
 class CloudDataSourceImpl @Inject constructor(private val apis: Apis) : CloudDataSource {
-    override fun loadNothing(): String {
-        return ""
-    }
+    override suspend fun loadLaunches() = apis.loadLaunches()
 }

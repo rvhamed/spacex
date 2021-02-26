@@ -15,5 +15,6 @@ class LocalDataSourceImpl @Inject constructor(
 ) : LocalDataSource {
 
     override fun loadLaunches(): Flow<List<LaunchesEntity>> = launchesDao.loadAllLaunches()
-    override fun insertLaunches(launches: List<LaunchesEntity>) = launchesDao.insert(launches)
+    override suspend fun insertLaunches(launches: List<LaunchesEntity>) = launchesDao.insert(launches)
+    override suspend fun deleteExpiredLaunches() = launchesDao.deleteExpiredLaunches()
 }

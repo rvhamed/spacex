@@ -87,8 +87,8 @@ class FullScreenLoadingView : FrameLayout {
     private fun showLoading() {
         prevState = FullScreenLoadingState.LOADING
         prevMessage = ""
-        llErrorCenter?.show()
-        llEmpty?.show()
+        llErrorCenter?.hide()
+        llEmpty?.hide()
         pgCenter?.show()
         parent?.show()
         show()

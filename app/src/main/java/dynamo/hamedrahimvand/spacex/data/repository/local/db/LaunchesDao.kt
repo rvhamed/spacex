@@ -15,8 +15,12 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface LaunchesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(launchesList: List<LaunchesEntity>)
+    suspend fun insert(launchesList: List<LaunchesEntity>)
 
     @Query("SELECT * FROM LaunchesEntity")
     fun loadAllLaunches(): Flow<List<LaunchesEntity>>
+
+    @Query("DELETE FROM LaunchesEntity")
+    suspend fun deleteExpiredLaunches()
+
 }

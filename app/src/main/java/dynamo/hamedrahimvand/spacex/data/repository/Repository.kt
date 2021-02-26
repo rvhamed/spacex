@@ -1,6 +1,7 @@
 package dynamo.hamedrahimvand.spacex.data.repository
 
 import dynamo.hamedrahimvand.spacex.data.model.db_models.LaunchesEntity
+import dynamo.hamedrahimvand.spacex.data.model.request_models.LaunchesRequestModel
 import dynamo.hamedrahimvand.spacex.data.model.response_models.LaunchesResponse
 import dynamo.hamedrahimvand.spacex.data.model.retrofit.Resource
 import kotlinx.coroutines.flow.Flow
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.Flow
  */
 interface Repository {
 
-    suspend fun loadLaunchesAsync(): Flow<Resource<List<LaunchesResponse>>>
-    suspend fun loadLaunches(isForceFetch: Boolean): Flow<Resource<List<LaunchesEntity>>>
+    suspend fun loadLaunchesAsync(launchesRequestModel: LaunchesRequestModel): Flow<Resource<LaunchesResponse>>
+    suspend fun loadLaunches(isRefresh:Boolean, isForceFetch: Boolean, requestModel: LaunchesRequestModel): Flow<Resource<List<LaunchesEntity>>>
+    suspend fun deleteExpiredLaunches()
 }

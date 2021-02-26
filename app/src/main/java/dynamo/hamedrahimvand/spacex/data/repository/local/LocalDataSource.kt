@@ -10,5 +10,6 @@ import kotlinx.coroutines.flow.Flow
  */
 interface LocalDataSource {
     fun loadLaunches(): Flow<List<LaunchesEntity>>
-    fun insertLaunches(launches: List<LaunchesEntity>)
+    suspend fun insertLaunches(launches: List<LaunchesEntity>)
+    suspend fun deleteExpiredLaunches()
 }

@@ -1,10 +1,15 @@
 package dynamo.hamedrahimvand.spacex.data.usecase
 
+import dynamo.hamedrahimvand.spacex.data.model.request_models.LaunchesRequestModel
+import dynamo.hamedrahimvand.spacex.data.model.request_models.Options
 import dynamo.hamedrahimvand.spacex.data.model.retrofit.Resource
-import dynamo.hamedrahimvand.spacex.data.model.ui_models.Launches
+import dynamo.hamedrahimvand.spacex.data.model.ui_models.LaunchItem
 import dynamo.hamedrahimvand.spacex.data.repository.Repository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -13,12 +18,21 @@ import javax.inject.Inject
  *@since 2/26/21
  */
 class LoadLaunchesUseCase @Inject constructor(private val repository: Repository) :
-    BaseUseCase<List<Launches>>() {
+    BaseUseCase<List<LaunchItem>>() {
+    companion object {
+        private const val LIMIT = 10
+    }
+
+    var isRefresh: Boolean = false
     var isForceFetch: Boolean = false
-    override suspend fun loadData(): Flow<Resource<List<Launches>>> {
-        val flow = repository.loadLaunches(isForceFetch).map { resource ->
+    var nextPage = 0
+    private val requestModel: LaunchesRequestModel
+        get() = LaunchesRequestModel(Options(LIMIT, nextPage))
+
+    override suspend fun loadData(): Flow<Resource<List<LaunchItem>>> {
+        val flow = repository.loadLaunches(isRefresh,isForceFetch, requestModel).map { resource ->
             val data = resource.data?.map { launchesEntity ->
-                Launches(launchesEntity.id, launchesEntity.name, launchesEntity.smallIcon)
+                LaunchItem(launchesEntity.id, launchesEntity.name, launchesEntity.smallIcon)
             }
             Resource(resource.status, data, resource.error)
         }

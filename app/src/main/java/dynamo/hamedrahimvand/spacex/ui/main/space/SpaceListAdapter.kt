@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dynamo.hamedrahimvand.spacex.R
 import dynamo.hamedrahimvand.spacex.common.extensions.loadUrl
-import dynamo.hamedrahimvand.spacex.data.model.ui_models.Launches
+import dynamo.hamedrahimvand.spacex.data.model.ui_models.LaunchItem
 import dynamo.hamedrahimvand.spacex.databinding.ItemLaunchesBinding
 
 /**
@@ -16,19 +16,19 @@ import dynamo.hamedrahimvand.spacex.databinding.ItemLaunchesBinding
  *@since 2/26/21
  */
 class SpaceListAdapter(val spaceListCallback: SpaceListCallback) :
-    ListAdapter<Launches, SpaceListAdapter.SpaceListViewHolder>(SELECTION_COMPARATOR) {
+    ListAdapter<LaunchItem, SpaceListAdapter.SpaceListViewHolder>(SELECTION_COMPARATOR) {
 
     companion object {
-        private val SELECTION_COMPARATOR = object : DiffUtil.ItemCallback<Launches>() {
+        private val SELECTION_COMPARATOR = object : DiffUtil.ItemCallback<LaunchItem>() {
             override fun areItemsTheSame(
-                oldItem: Launches,
-                newItem: Launches
+                oldItem: LaunchItem,
+                newItem: LaunchItem
             ): Boolean = oldItem.id == newItem.id
 
 
             override fun areContentsTheSame(
-                oldItem: Launches,
-                newItem: Launches
+                oldItem: LaunchItem,
+                newItem: LaunchItem
             ): Boolean = oldItem == newItem
         }
     }

@@ -4,10 +4,12 @@ import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import dynamo.hamedrahimvand.spacex.data.model.error_model.ErrorManager
 import dynamo.hamedrahimvand.spacex.data.model.retrofit.Resource
-import dynamo.hamedrahimvand.spacex.data.model.retrofit.Resource.Status.*
+import dynamo.hamedrahimvand.spacex.data.model.retrofit.Resource.Status.ERROR
+import dynamo.hamedrahimvand.spacex.data.model.retrofit.Resource.Status.SUCCESS
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.withContext
 
 /**
  *
@@ -31,7 +33,9 @@ abstract class NetworkBoundResource<ResultType, RequestType>() {
                 .collect { resource ->
                     when (resource.status) {
                         SUCCESS -> {
-                            saveCallResult(resource)
+                            withContext(Dispatchers.IO) {
+                                saveCallResult(resource)
+                            }
                             emitAll(loadFromDb().map { Resource.success(it) })
                         }
                         ERROR -> {
@@ -54,7 +58,7 @@ abstract class NetworkBoundResource<ResultType, RequestType>() {
     protected open fun onFetchFailed() {}
 
     @WorkerThread
-    protected abstract fun saveCallResult(item: Resource<RequestType?>)
+    protected abstract suspend fun saveCallResult(item: Resource<RequestType?>)
 
     @MainThread
     protected abstract fun shouldFetch(data: ResultType?): Boolean

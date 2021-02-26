@@ -9,7 +9,7 @@ import dynamo.hamedrahimvand.spacex.common.base.BaseFragment
 import dynamo.hamedrahimvand.spacex.common.custom.FullScreenLoadingState
 import dynamo.hamedrahimvand.spacex.common.custom.MarginItemDecoration
 import dynamo.hamedrahimvand.spacex.common.delegates.viewBinding
-import dynamo.hamedrahimvand.spacex.common.extensions.showSnack
+import dynamo.hamedrahimvand.spacex.common.extensions.*
 import dynamo.hamedrahimvand.spacex.data.model.retrofit.Resource.Status.*
 import dynamo.hamedrahimvand.spacex.databinding.FragmentSpaceListBinding
 
@@ -30,6 +30,16 @@ class SpaceListFragment : BaseFragment<SpaceListViewModel>(), SpaceListCallback 
         private const val FULL_SCREEN_LOADING_STATE = "full_screen_loading_state"
     }
 
+    var fullScreenLoadingState: FullScreenLoadingState?
+        set(value) {
+            viewModel.viewState.putSerializable(
+                FULL_SCREEN_LOADING_STATE,
+                value
+            )
+        }
+        get() =
+            viewModel.viewState.getSerializable(FULL_SCREEN_LOADING_STATE) as? FullScreenLoadingState
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViewModel()
@@ -39,12 +49,12 @@ class SpaceListFragment : BaseFragment<SpaceListViewModel>(), SpaceListCallback 
     }
 
     override fun onStop() {
-        viewModel.viewState.putSerializable(FULL_SCREEN_LOADING_STATE, binding.fslLoading.prevState)
+        fullScreenLoadingState = binding.fslLoading.prevState
         super.onStop()
     }
 
     override fun setupView() {
-        (viewModel.viewState.getSerializable(FULL_SCREEN_LOADING_STATE) as? FullScreenLoadingState)?.let { fslState ->
+        fullScreenLoadingState?.let { fslState ->
             binding.fslLoading.setState(fslState)
         }
 
@@ -52,9 +62,12 @@ class SpaceListFragment : BaseFragment<SpaceListViewModel>(), SpaceListCallback 
         with(binding.rvLaunches) {
             addItemDecoration(MarginItemDecoration(0, 7, 17, 7))
             adapter = spaceListAdapter
+            doPagination(PAGINATION_COUNT) {
+                viewModel.loadNextPage()
+            }
         }
         binding.fslLoading.onRetryClick {
-            viewModel.loadLaunches()
+            viewModel.loadLaunches(true)
         }
     }
 
@@ -68,6 +81,7 @@ class SpaceListFragment : BaseFragment<SpaceListViewModel>(), SpaceListCallback 
                     } else {
                         binding.fslLoading.setState(FullScreenLoadingState.DONE)
                     }
+                    binding.pbLoading.hide(false)
                 }
                 ERROR -> {
                     if (spaceListAdapter.currentList.isNullOrEmpty()) {
@@ -82,9 +96,14 @@ class SpaceListFragment : BaseFragment<SpaceListViewModel>(), SpaceListCallback 
                                 ?: getString(R.string.something_went_wrong)
                         )
                     }
+                    binding.pbLoading.hide(false)
+                    binding.rvLaunches.tag = false
                 }
                 LOADING -> {
-                    binding.fslLoading.setState(FullScreenLoadingState.LOADING)
+                    if (spaceListAdapter.currentList.isNullOrEmpty())
+                        binding.fslLoading.setState(FullScreenLoadingState.LOADING)
+                    else
+                        binding.pbLoading.show()
                 }
             }
         }
@@ -93,4 +112,6 @@ class SpaceListFragment : BaseFragment<SpaceListViewModel>(), SpaceListCallback 
     override fun onItemClicked(id: String) {
         navigateTo(SpaceListFragmentDirections.actionSpaceListFragmentToSpaceDetailsFragment(id))
     }
+
+
 }

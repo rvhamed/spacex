@@ -1,6 +1,7 @@
 package dynamo.hamedrahimvand.spacex.data.model.mapper
 
 import dynamo.hamedrahimvand.spacex.data.model.db_models.LaunchesEntity
+import dynamo.hamedrahimvand.spacex.data.model.response_models.LaunchDetailsResponse
 import dynamo.hamedrahimvand.spacex.data.model.response_models.LaunchesResponse
 
 /**
@@ -8,6 +9,6 @@ import dynamo.hamedrahimvand.spacex.data.model.response_models.LaunchesResponse
  *@author Hamed.Rahimvand
  *@since 2/26/21
  */
-fun LaunchesResponse.toLaunchesEntity(): LaunchesEntity {
+fun LaunchDetailsResponse.toLaunchesEntity(): LaunchesEntity {
     return LaunchesEntity(id, name, links?.patch?.small)
 }

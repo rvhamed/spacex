@@ -34,7 +34,7 @@ class RepositoryImplTest {
                 }
             }
 
-            override fun saveCallResult(item: Resource<LaunchesResponseTestModel?>) {
+            override suspend fun saveCallResult(item: Resource<LaunchesResponseTestModel?>) {
                 item.data?.let { launchesResponse ->
                     launchesListFromDb =
                         LaunchesTestModel(launchesResponse.id, launchesResponse.name)

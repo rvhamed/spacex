@@ -2,16 +2,17 @@ package dynamo.hamedrahimvand.spacex.common.livedata
 
 import androidx.annotation.MainThread
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import java.util.concurrent.atomic.AtomicBoolean
 
 
-open class EventLiveData<T> : MutableLiveData<T>() {
+class EventLiveData<T> : MutableLiveData<T>() {
     private val mPending: AtomicBoolean = AtomicBoolean(false)
 
     override fun observe(owner: LifecycleOwner, observer: Observer<in T>) {
-        super.observe(owner, {
+        super.observe(owner, Observer<T> {
             if (mPending.compareAndSet(true, false)) {
                 observer.onChanged(it)
             }
@@ -32,5 +33,3 @@ open class EventLiveData<T> : MutableLiveData<T>() {
         value = null;
     }
 }
-
-

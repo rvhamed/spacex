@@ -1,6 +1,7 @@
 package dynamo.hamedrahimvand.spacex.data.repository.local
 
-import dynamo.hamedrahimvand.spacex.data.model.local_models.Launches
+import dynamo.hamedrahimvand.spacex.data.model.db_models.LaunchesEntity
+import dynamo.hamedrahimvand.spacex.data.repository.local.db.LaunchesDao
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -9,12 +10,10 @@ import javax.inject.Inject
  *@author Hamed.Rahimvand
  *@since 2/25/21
  */
-class LocalDataSourceImpl @Inject constructor() : LocalDataSource {
-    override fun loadLaunches(): Flow<List<Launches>> {
-        TODO("Not yet implemented")
-    }
+class LocalDataSourceImpl @Inject constructor(
+    private val launchesDao: LaunchesDao
+) : LocalDataSource {
 
-    override fun insertLaunches() {
-        TODO("Not yet implemented")
-    }
+    override fun loadLaunches(): Flow<List<LaunchesEntity>> = launchesDao.loadAllLaunches()
+    override fun insertLaunches(launches: List<LaunchesEntity>) = launchesDao.insert(launches)
 }

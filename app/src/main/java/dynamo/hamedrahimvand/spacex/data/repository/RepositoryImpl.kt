@@ -1,6 +1,7 @@
 package dynamo.hamedrahimvand.spacex.data.repository
 
-import dynamo.hamedrahimvand.spacex.data.model.local_models.Launches
+import dynamo.hamedrahimvand.spacex.data.model.db_models.LaunchesEntity
+import dynamo.hamedrahimvand.spacex.data.model.mapper.toLaunchesEntity
 import dynamo.hamedrahimvand.spacex.data.model.response_models.LaunchesResponse
 import dynamo.hamedrahimvand.spacex.data.model.retrofit.Resource
 import dynamo.hamedrahimvand.spacex.data.repository.local.LocalDataSource
@@ -18,14 +19,22 @@ class RepositoryImpl @Inject constructor(
     private val cloudDataSource: CloudDataSource
 ) : Repository {
 
-    override suspend fun loadLaunches(): Flow<Resource<List<Launches>>> {
-        return object : NetworkBoundResource<List<Launches>, List<LaunchesResponse>>() {
-            override fun saveCallResult(item: Resource<List<LaunchesResponse>?>) =
-                localDataSource.insertLaunches()
+    override suspend fun loadLaunches(isForceFetch: Boolean): Flow<Resource<List<LaunchesEntity>>> {
+        return object : NetworkBoundResource<List<LaunchesEntity>, List<LaunchesResponse>>() {
+            override fun saveCallResult(item: Resource<List<LaunchesResponse>?>) {
+                item.data?.let { launchesResponseList ->
+                    val entityList = launchesResponseList.map {
+                        it.toLaunchesEntity()
+                    }
+                    localDataSource.insertLaunches(entityList)
+                }
+            }
 
-            override fun shouldFetch(data: List<Launches>?): Boolean = data.isNullOrEmpty()
+            override fun shouldFetch(data: List<LaunchesEntity>?): Boolean =
+                data.isNullOrEmpty() || isForceFetch
 
-            override suspend fun loadFromDb(): Flow<List<Launches>> = localDataSource.loadLaunches()
+            override suspend fun loadFromDb(): Flow<List<LaunchesEntity>> =
+                localDataSource.loadLaunches()
 
             override suspend fun createCall(): Flow<Resource<List<LaunchesResponse>>> =
                 loadLaunchesAsync()

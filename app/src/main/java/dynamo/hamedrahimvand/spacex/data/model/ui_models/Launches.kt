@@ -1,4 +1,4 @@
-package dynamo.hamedrahimvand.spacex.data.model.local_models
+package dynamo.hamedrahimvand.spacex.data.model.ui_models
 
 /**
  *

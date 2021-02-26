@@ -1,6 +1,6 @@
 package dynamo.hamedrahimvand.spacex.data.repository.local
 
-import dynamo.hamedrahimvand.spacex.data.model.local_models.Launches
+import dynamo.hamedrahimvand.spacex.data.model.db_models.LaunchesEntity
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -9,6 +9,6 @@ import kotlinx.coroutines.flow.Flow
  *@since 2/25/21
  */
 interface LocalDataSource {
-    fun loadLaunches(): Flow<List<Launches>>
-    fun insertLaunches()
+    fun loadLaunches(): Flow<List<LaunchesEntity>>
+    fun insertLaunches(launches: List<LaunchesEntity>)
 }

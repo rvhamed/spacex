@@ -3,7 +3,7 @@ package dynamo.hamedrahimvand.spacex.ui.main.space
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dynamo.hamedrahimvand.spacex.common.base.BaseViewModel
 import dynamo.hamedrahimvand.spacex.common.livedata.EventLiveData
-import dynamo.hamedrahimvand.spacex.data.model.local_models.Launches
+import dynamo.hamedrahimvand.spacex.data.model.ui_models.Launches
 import dynamo.hamedrahimvand.spacex.data.model.retrofit.Resource
 import dynamo.hamedrahimvand.spacex.data.usecase.LoadLaunchesUseCase
 import javax.inject.Inject

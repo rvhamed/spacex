@@ -23,10 +23,10 @@ data class Resource<out T>(val status: Status, val data: T?, val error: Throwabl
             )
         }
 
-        fun <T> loading(): Resource<T> {
+        fun <T> loading(data: T? = null): Resource<T> {
             return Resource(
                 Status.LOADING,
-                null,
+                data,
                 null
             )
         }

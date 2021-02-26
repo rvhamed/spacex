@@ -84,4 +84,7 @@ dependencies {
     implementation "com.google.code.gson:gson:$gson"
     implementation "com.squareup.okhttp3:logging-interceptor:$loggingInterceptor"
 
+    //Hamcrest
+    testImplementation 'org.hamcrest:hamcrest:2.2'
+
 }

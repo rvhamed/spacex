@@ -9,5 +9,5 @@ import dynamo.hamedrahimvand.spacex.data.model.response_models.LaunchesResponse
  *@since 2/26/21
  */
 fun LaunchesResponse.toLaunchesEntity(): LaunchesEntity {
-    return LaunchesEntity(this.id, this.name)
+    return LaunchesEntity(id, name, links?.patch?.small)
 }

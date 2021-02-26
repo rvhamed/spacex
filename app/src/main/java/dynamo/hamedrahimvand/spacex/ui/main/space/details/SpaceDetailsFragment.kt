@@ -1,7 +1,6 @@
-package dynamo.hamedrahimvand.spacex.ui.main.space
+package dynamo.hamedrahimvand.spacex.ui.main.space.details
 
 import android.os.Bundle
-import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
@@ -9,7 +8,6 @@ import dynamo.hamedrahimvand.spacex.R
 import dynamo.hamedrahimvand.spacex.common.base.BaseFragment
 import dynamo.hamedrahimvand.spacex.common.delegates.viewBinding
 import dynamo.hamedrahimvand.spacex.databinding.FragmentSpaceDetailsBinding
-import dynamo.hamedrahimvand.spacex.databinding.FragmentSpaceListBinding
 
 /**
  *
@@ -23,7 +21,7 @@ class SpaceDetailsFragment : BaseFragment<SpaceDetailsViewModel>() {
     private val args by navArgs<SpaceDetailsFragmentArgs>()
     private val binding by viewBinding(FragmentSpaceDetailsBinding::bind)
 
-    override fun setupView(){
+    override fun setupView() {
         binding.textView.text = "id: ${args.spaceId}"
     }
 }

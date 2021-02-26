@@ -14,11 +14,11 @@
 
     <fragment
         android:id="@+id/spaceDetailsFragment"
-        android:name="dynamo.hamedrahimvand.spacex.ui.main.space.SpaceDetailsFragment"
+        android:name="dynamo.hamedrahimvand.spacex.ui.main.space.details.SpaceDetailsFragment"
         android:label="SpaceDetailsFragment" >
         <argument
             android:name="spaceId"
-            app:argType="integer" />
+            app:argType="string" />
     </fragment>
 
 </navigation>

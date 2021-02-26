@@ -12,5 +12,6 @@ import androidx.room.PrimaryKey
 data class LaunchesEntity(
     @PrimaryKey(autoGenerate = false)
     val id: String,
-    val name: String?
+    val name: String?,
+    val smallIcon: String?
 )

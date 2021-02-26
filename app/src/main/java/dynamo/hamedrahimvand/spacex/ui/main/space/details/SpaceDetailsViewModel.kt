@@ -1,4 +1,4 @@
-package dynamo.hamedrahimvand.spacex.ui.main.space
+package dynamo.hamedrahimvand.spacex.ui.main.space.details
 
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dynamo.hamedrahimvand.spacex.common.base.BaseFragment

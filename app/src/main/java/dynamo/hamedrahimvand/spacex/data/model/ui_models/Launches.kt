@@ -7,5 +7,6 @@ package dynamo.hamedrahimvand.spacex.data.model.ui_models
  */
 data class Launches(
     val id: String,
-    val name: String?
+    val name: String?,
+    val smallIcon: String?
 )

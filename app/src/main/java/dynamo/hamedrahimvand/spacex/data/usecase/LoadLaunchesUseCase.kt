@@ -18,7 +18,7 @@ class LoadLaunchesUseCase @Inject constructor(private val repository: Repository
     override suspend fun loadData(): Flow<Resource<List<Launches>>> {
         val flow = repository.loadLaunches(isForceFetch).map { resource ->
             val data = resource.data?.map { launchesEntity ->
-                Launches(launchesEntity.id, launchesEntity.name)
+                Launches(launchesEntity.id, launchesEntity.name, launchesEntity.smallIcon)
             }
             Resource(resource.status, data, resource.error)
         }

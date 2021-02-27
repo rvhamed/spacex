@@ -1,8 +1,10 @@
 package dynamo.hamedrahimvand.spacex.data.model
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 /**
@@ -22,20 +24,24 @@ data class LaunchResponse(
 )
 
 @Entity
+@Parcelize
 data class Launch(
     @PrimaryKey(autoGenerate = false)
     val id: String,
     val name: String?,
+    val details: String?,
     val links: Links?,
     @SerializedName("date_utc")
     val date: Date
-)
+):Parcelable
 
+@Parcelize
 data class Links(
     val patch: Patch?
-)
+):Parcelable
 
+@Parcelize
 data class Patch(
     val small: String?,
     val large: String?
-)
+):Parcelable

@@ -5,13 +5,17 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import dynamo.hamedrahimvand.spacex.BuildConfig
 import dynamo.hamedrahimvand.spacex.R
 import dynamo.hamedrahimvand.spacex.common.base.BaseFragment
 import dynamo.hamedrahimvand.spacex.common.custom.FullScreenLoadingState
 import dynamo.hamedrahimvand.spacex.common.custom.MarginItemDecoration
 import dynamo.hamedrahimvand.spacex.common.delegates.viewBinding
 import dynamo.hamedrahimvand.spacex.common.extensions.*
+import dynamo.hamedrahimvand.spacex.data.model.Launch
 import dynamo.hamedrahimvand.spacex.data.model.retrofit.Resource.Status.*
 import dynamo.hamedrahimvand.spacex.databinding.FragmentSpaceListBinding
 
@@ -33,6 +37,20 @@ class SpaceListFragment : BaseFragment<SpaceListViewModel>(), SpaceListCallback,
         private const val FULL_SCREEN_LOADING_STATE = "full_screen_loading_state"
         private const val PROGRESS_LOADING_STATE = "progress_loading_state"
         private const val SWIPE_REFRESH_LOADING_STATE = "swipe_refresh_loading_state"
+    }
+
+    private var isSnackbarShowing = false
+    private val snakbarCallback = object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+        override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+            super.onDismissed(transientBottomBar, event)
+            transientBottomBar?.removeCallback(this)
+            isSnackbarShowing = false
+        }
+
+        override fun onShown(transientBottomBar: Snackbar?) {
+            super.onShown(transientBottomBar)
+            isSnackbarShowing = true
+        }
     }
 
     //region View States
@@ -100,6 +118,10 @@ class SpaceListFragment : BaseFragment<SpaceListViewModel>(), SpaceListCallback,
         binding.fslLoading.onRetryClick {
             viewModel.loadLaunches(true)
         }
+
+        with(binding.vToolbarList){
+            tvTitle.text = getString(R.string.app_name)
+        }
     }
 
     private fun setupViewModel() {
@@ -122,15 +144,17 @@ class SpaceListFragment : BaseFragment<SpaceListViewModel>(), SpaceListCallback,
                                 ?: getString(R.string.something_went_wrong)
                         )
                     } else {
-                        activity?.showSnack(
-                            resource.errorModel?.errorMessage
-                                ?: getString(R.string.something_went_wrong)
-                        )
+                        if(!isSnackbarShowing) {
+                            activity?.showSnack(
+                                resource.errorModel?.errorMessage
+                                    ?: getString(R.string.something_went_wrong)
+                            )?.addCallback(snakbarCallback)
+                        }
                     }
                     hideAllLoadingViews()
                 }
                 LOADING -> {
-                    //For more readability this conditions should be separated.
+                    //For more readability these conditions should be separated.
                     if (spaceListAdapter.currentList.isNullOrEmpty())
                         binding.fslLoading.setState(FullScreenLoadingState.LOADING)
 
@@ -159,8 +183,8 @@ class SpaceListFragment : BaseFragment<SpaceListViewModel>(), SpaceListCallback,
         }
     }
 
-    override fun onItemClicked(id: String) {
-        navigateTo(SpaceListFragmentDirections.actionSpaceListFragmentToSpaceDetailsFragment(id))
+    override fun onItemClicked(launch: Launch) {
+        navigateTo(SpaceListFragmentDirections.actionSpaceListFragmentToSpaceDetailsFragment(launch))
     }
 
     override fun onRefresh() {

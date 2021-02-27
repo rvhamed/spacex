@@ -47,7 +47,7 @@ class SpaceListAdapter(val spaceListCallback: SpaceListCallback) :
         RecyclerView.ViewHolder(itemBinding.root) {
         init {
             itemBinding.cvRoot.setOnClickListener {
-                spaceListCallback.onItemClicked(currentList[adapterPosition].id)
+                spaceListCallback.onItemClicked(currentList[adapterPosition])
             }
         }
 
@@ -66,5 +66,5 @@ class SpaceListAdapter(val spaceListCallback: SpaceListCallback) :
 }
 
 interface SpaceListCallback {
-    fun onItemClicked(id: String)
+    fun onItemClicked(launch: Launch)
 }

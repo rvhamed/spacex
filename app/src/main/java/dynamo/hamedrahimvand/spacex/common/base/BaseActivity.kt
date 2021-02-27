@@ -39,4 +39,10 @@ abstract class BaseActivity<V : BaseViewModel> : AppCompatActivity(), Navigator 
         }
     }
 
+    override fun popBackStack() {
+        navHostId()?.let { id ->
+            findNavController(id).popBackStack()
+        }
+    }
+
 }

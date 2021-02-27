@@ -10,4 +10,5 @@ import androidx.navigation.NavDirections
  */
 interface Navigator {
     fun navigateTo(navDirections: NavDirections)
+    fun popBackStack()
 }

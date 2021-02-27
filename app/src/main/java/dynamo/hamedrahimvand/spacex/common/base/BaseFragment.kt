@@ -43,4 +43,9 @@ abstract class BaseFragment<V : BaseViewModel> : Fragment(), Navigator {
     override fun navigateTo(navDirections: NavDirections) {
         mNavigator?.navigateTo(navDirections)
     }
+
+    override fun popBackStack() {
+        mNavigator?.popBackStack()
+    }
+
 }

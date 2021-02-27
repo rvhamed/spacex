@@ -1,12 +1,15 @@
 package dynamo.hamedrahimvand.spacex.ui.main.space.details
 
-import android.os.Bundle
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import dynamo.hamedrahimvand.spacex.R
 import dynamo.hamedrahimvand.spacex.common.base.BaseFragment
 import dynamo.hamedrahimvand.spacex.common.delegates.viewBinding
+import dynamo.hamedrahimvand.spacex.common.extensions.DAY_DATE_PATTERN
+import dynamo.hamedrahimvand.spacex.common.extensions.loadUrl
+import dynamo.hamedrahimvand.spacex.common.extensions.show
+import dynamo.hamedrahimvand.spacex.common.extensions.toFormattedStringUTC
 import dynamo.hamedrahimvand.spacex.databinding.FragmentSpaceDetailsBinding
 
 /**
@@ -22,6 +25,21 @@ class SpaceDetailsFragment : BaseFragment<SpaceDetailsViewModel>() {
     private val binding by viewBinding(FragmentSpaceDetailsBinding::bind)
 
     override fun setupView() {
-        binding.textView.text = "id: ${args.spaceId}"
+        binding.ivLarge.loadUrl(
+            args.launch.links?.patch?.large,
+            R.drawable.ic_rocket_placeholder,
+            R.drawable.ic_rocket_placeholder
+        )
+        binding.tvDetails.text = args.launch.details
+        binding.tvName.text = args.launch.name
+        binding.tvDate.text = args.launch.date.toFormattedStringUTC(DAY_DATE_PATTERN)
+
+        with(binding.vToolbar) {
+            tvTitle.text = getString(R.string.app_name)
+            ibBack.setOnClickListener {
+                popBackStack()
+            }
+            ibBack.show()
+        }
     }
 }

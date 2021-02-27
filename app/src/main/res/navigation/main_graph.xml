@@ -17,8 +17,8 @@
         android:name="dynamo.hamedrahimvand.spacex.ui.main.space.details.SpaceDetailsFragment"
         android:label="SpaceDetailsFragment" >
         <argument
-            android:name="spaceId"
-            app:argType="string" />
+            android:name="launch"
+            app:argType="dynamo.hamedrahimvand.spacex.data.model.Launch" />
     </fragment>
 
 </navigation>

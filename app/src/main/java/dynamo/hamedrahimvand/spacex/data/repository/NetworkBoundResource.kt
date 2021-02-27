@@ -2,12 +2,12 @@ package dynamo.hamedrahimvand.spacex.data.repository
 
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
+import dynamo.hamedrahimvand.spacex.BuildConfig
 import dynamo.hamedrahimvand.spacex.data.model.error_model.ErrorManager
 import dynamo.hamedrahimvand.spacex.data.model.retrofit.Resource
 import dynamo.hamedrahimvand.spacex.data.model.retrofit.Resource.Status.ERROR
 import dynamo.hamedrahimvand.spacex.data.model.retrofit.Resource.Status.SUCCESS
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 
@@ -22,10 +22,14 @@ abstract class NetworkBoundResource<ResultType, RequestType>() {
         emit(Resource.loading())
 
         val dbValue = loadFromDb().first()
+        emit(Resource.loading(dbValue))
+
         if (shouldFetch(dbValue)) {
-            emit(Resource.loading(dbValue))
             createCall()
                 .catch { error ->
+                    if (BuildConfig.DEBUG) {
+                        error.printStackTrace()
+                    }
                     emit(Resource.error(error, null))
                 }
                 .flowOn(Dispatchers.IO)
@@ -45,7 +49,11 @@ abstract class NetworkBoundResource<ResultType, RequestType>() {
                                 }
                             }
                             onFetchFailed()
-                            emitAll(loadFromDb().map { Resource.error(resource.error, it) })
+                            emitAll(loadFromDb().map {
+                                Resource.error(resource.error, it).apply {
+                                    errorModel = resource.errorModel
+                                }
+                            })
                         }
                     }
                 }

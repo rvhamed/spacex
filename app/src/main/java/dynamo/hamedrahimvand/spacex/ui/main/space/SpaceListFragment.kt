@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import dagger.hilt.android.AndroidEntryPoint
 import dynamo.hamedrahimvand.spacex.R
 import dynamo.hamedrahimvand.spacex.common.base.BaseFragment
@@ -20,7 +21,8 @@ import dynamo.hamedrahimvand.spacex.databinding.FragmentSpaceListBinding
  *@since 2/25/21
  */
 @AndroidEntryPoint
-class SpaceListFragment : BaseFragment<SpaceListViewModel>(), SpaceListCallback {
+class SpaceListFragment : BaseFragment<SpaceListViewModel>(), SpaceListCallback,
+    SwipeRefreshLayout.OnRefreshListener {
     override val viewModel: SpaceListViewModel by viewModels()
     override val viewId: Int = R.layout.fragment_space_list
     private val binding by viewBinding(FragmentSpaceListBinding::bind)
@@ -30,6 +32,7 @@ class SpaceListFragment : BaseFragment<SpaceListViewModel>(), SpaceListCallback 
     companion object {
         private const val FULL_SCREEN_LOADING_STATE = "full_screen_loading_state"
         private const val PROGRESS_LOADING_STATE = "progress_loading_state"
+        private const val SWIPE_REFRESH_LOADING_STATE = "swipe_refresh_loading_state"
     }
 
     //region View States
@@ -52,6 +55,17 @@ class SpaceListFragment : BaseFragment<SpaceListViewModel>(), SpaceListCallback 
         }
         get() =
             viewModel.viewState.getBoolean(PROGRESS_LOADING_STATE)
+
+
+    private var swipeRefreshLoadingState: Boolean
+        set(value) {
+            viewModel.viewState.putBoolean(
+                SWIPE_REFRESH_LOADING_STATE,
+                value
+            )
+        }
+        get() =
+            viewModel.viewState.getBoolean(SWIPE_REFRESH_LOADING_STATE)
     //endregion
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,6 +79,7 @@ class SpaceListFragment : BaseFragment<SpaceListViewModel>(), SpaceListCallback 
     override fun onStop() {
         fullScreenLoadingState = binding.fslLoading.prevState
         progressLoadingState = binding.pbLoading.isVisible
+        swipeRefreshLoadingState = binding.swipeRefresh.isRefreshing
         super.onStop()
     }
 
@@ -74,6 +89,7 @@ class SpaceListFragment : BaseFragment<SpaceListViewModel>(), SpaceListCallback 
         }
         if (progressLoadingState) binding.pbLoading.show() else binding.pbLoading.hide(false)
 
+        binding.swipeRefresh.setOnRefreshListener(this)
         with(binding.rvLaunches) {
             addItemDecoration(MarginItemDecoration(0, 7, 17, 7))
             adapter = spaceListAdapter
@@ -96,7 +112,7 @@ class SpaceListFragment : BaseFragment<SpaceListViewModel>(), SpaceListCallback 
                     } else {
                         binding.fslLoading.setState(FullScreenLoadingState.DONE)
                     }
-                    binding.pbLoading.hide(false)
+                    hideAllLoadingViews()
                 }
                 ERROR -> {
                     if (spaceListAdapter.currentList.isNullOrEmpty()) {
@@ -111,21 +127,45 @@ class SpaceListFragment : BaseFragment<SpaceListViewModel>(), SpaceListCallback 
                                 ?: getString(R.string.something_went_wrong)
                         )
                     }
-                    binding.pbLoading.hide(false)
-                    binding.rvLaunches.tag = false
+                    hideAllLoadingViews()
                 }
                 LOADING -> {
+                    //For more readability this conditions should be separated.
                     if (spaceListAdapter.currentList.isNullOrEmpty())
                         binding.fslLoading.setState(FullScreenLoadingState.LOADING)
-                    else
+
+                    if (!resource.data.isNullOrEmpty() && spaceListAdapter.currentList.isNullOrEmpty()) {
+                        binding.fslLoading.setState(FullScreenLoadingState.DONE)
+                        spaceListAdapter.submitList(resource.data)
+                    }
+
+                    if (!spaceListAdapter.currentList.isNullOrEmpty() && !binding.swipeRefresh.isRefreshing)
                         binding.pbLoading.show()
+
                 }
             }
         }
     }
 
+    private fun hideAllLoadingViews() {
+        binding.root.post {
+            if (binding.pbLoading.isVisible) {
+                binding.pbLoading.hide()
+            }
+            if (binding.swipeRefresh.isRefreshing) {
+                binding.swipeRefresh.isRefreshing = false
+            }
+            binding.rvLaunches.tag = false
+        }
+    }
+
     override fun onItemClicked(id: String) {
         navigateTo(SpaceListFragmentDirections.actionSpaceListFragmentToSpaceDetailsFragment(id))
+    }
+
+    override fun onRefresh() {
+        binding.swipeRefresh.isRefreshing = true
+        viewModel.loadLaunches(true)
     }
 
 

@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
 import androidx.viewbinding.ViewBinding
+import dynamo.hamedrahimvand.spacex.BuildConfig
 
 /**
  *
@@ -32,7 +33,9 @@ abstract class BaseActivity<V : BaseViewModel> : AppCompatActivity(), Navigator 
                 findNavController(id).navigate(navDirections)
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            if (BuildConfig.DEBUG) {
+                e.printStackTrace()
+            }
         }
     }
 

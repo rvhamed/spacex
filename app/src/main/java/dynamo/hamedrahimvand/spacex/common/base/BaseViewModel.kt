@@ -5,10 +5,13 @@ import androidx.lifecycle.viewModelScope
 import dynamo.hamedrahimvand.spacex.common.livedata.EventLiveData
 import dynamo.hamedrahimvand.spacex.data.model.retrofit.Resource
 import dynamo.hamedrahimvand.spacex.data.usecase.BaseUseCase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 /**
@@ -20,9 +23,11 @@ abstract class BaseViewModel : ViewModel() {
     private val jobMaps = mutableMapOf<String, Job>()
 
     fun <T> loadData(baseUseCase: BaseUseCase<T>, liveData: EventLiveData<Resource<T>>) {
-        val job = viewModelScope.launch {
-            baseUseCase.loadData().collect{
-                liveData.value = it
+        val job = viewModelScope.launch(Dispatchers.IO) {
+            baseUseCase.loadData().catch { error ->
+                error.printStackTrace()
+            }.collect{
+                liveData.postValue(it)
             }
         }
         cancelJob(baseUseCase)

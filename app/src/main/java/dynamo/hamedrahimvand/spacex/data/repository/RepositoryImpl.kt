@@ -41,7 +41,7 @@ class RepositoryImpl @Inject constructor(
             }
 
             override fun shouldFetch(data: List<Launch>?): Boolean =
-                data.isNullOrEmpty() || isForceFetch
+                data.isNullOrEmpty() || isForceFetch || isRefresh
 
             override suspend fun loadFromDb(): Flow<List<Launch>> =
                 localDataSource.loadLaunches()

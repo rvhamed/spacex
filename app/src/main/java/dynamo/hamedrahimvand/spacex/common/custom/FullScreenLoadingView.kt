@@ -86,12 +86,10 @@ class FullScreenLoadingView : FrameLayout {
 
     private fun showLoading() {
         prevState = FullScreenLoadingState.LOADING
-        prevMessage = ""
-        llErrorCenter?.hide()
-        llEmpty?.hide()
+        llErrorCenter?.isVisible(false)
+        llEmpty?.isVisible(false)
         pgCenter?.show()
-        parent?.show()
-        show()
+        parent?.isVisible(true)
     }
 
     private fun showError(errorMessage: String? = null) {
@@ -100,34 +98,31 @@ class FullScreenLoadingView : FrameLayout {
         tvErrorBody?.text = (errorMessage ?: this.errorMessage) ?: "".apply {
             if (this.isBlank()) tvErrorBody?.visibility = View.GONE
         }
-        parent?.show()
-        pgCenter?.hide(false)
-        llErrorCenter?.show()
-        llEmpty?.hide(false)
-        show()
+        parent?.isVisible(true)
+        pgCenter?.hide()
+        llErrorCenter?.isVisible(true)
+        llEmpty?.isVisible(false)
     }
 
     private fun showEmpty(emptyMessage: String?) {
         prevState = FullScreenLoadingState.EMPTY
         prevMessage = emptyMessage
-        llErrorCenter?.hide(false)
-        llEmpty?.show()
+        llErrorCenter?.isVisible(false)
+        llEmpty?.isVisible(true)
         pgCenter?.hide()
-        parent?.show()
+        parent?.isVisible(true)
         if (emptyMessage?.isEmpty() == false) {
             llEmpty?.findViewById<TextView>(R.id.tvNoData)?.text = emptyMessage
         }
-        show()
     }
 
     private fun hideAll() {
         prevState = FullScreenLoadingState.DONE
         prevMessage = ""
-        llErrorCenter?.hide(false)
-        llEmpty?.hide(false)
-        pgCenter?.hide(false)
-        parent?.hide(false)
-        hide(false)
+        llErrorCenter?.isVisible(isVisible = false)
+        llEmpty?.isVisible(isVisible = false)
+        pgCenter?.isVisible(isVisible = false)
+        parent?.isVisible(isVisible = false)
     }
 
     private fun dismissLoading(translationView: View? = null) {
@@ -147,7 +142,7 @@ class FullScreenLoadingView : FrameLayout {
                 }
 
                 override fun onAnimationEnd(p0: Animator?) {
-                    parent?.hide(false)
+                    parent?.isVisible(isVisible = false, keepArea = false)
                     parent?.alpha = 1f
                 }
 
@@ -185,13 +180,13 @@ class FullScreenLoadingView : FrameLayout {
         message: String? = null,
         drawable: Drawable? = null
     ) {
-        ivEmpty.setImageDrawable(
+        ivEmpty?.setImageDrawable(
             drawable ?: ContextCompat.getDrawable(
                 context,
                 R.drawable.ic_more
             )
         )
-        tvNoData.text = message ?: context.getString(R.string.nothing_found_here)
+        tvNoData?.text = message ?: context.getString(R.string.nothing_found_here)
     }
 
     fun onRetryClick(onClick: (View) -> Unit) {
@@ -203,6 +198,16 @@ class FullScreenLoadingView : FrameLayout {
 
     override fun setBackground(background: Drawable?) {
         parent?.background = background
+    }
+
+    fun View.isVisible(isVisible: Boolean, keepArea: Boolean = true): View {
+        visibility = if (isVisible) {
+            if (visibility == View.VISIBLE) return this
+            View.VISIBLE
+        } else {
+            if (keepArea) View.INVISIBLE else View.GONE
+        }
+        return this
     }
 }
 

@@ -1,17 +1,18 @@
-package dynamo.hamedrahimvand.spacex.data.model.response_models
+package dynamo.hamedrahimvand.spacex.data.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import java.util.*
 
 /**
  *
  *@author Hamed.Rahimvand
  *@since 2/26/21
  */
-//TODO This current model is temporary, is just for test. This should be completed.
-// Also, pagination is not handled currently.
-data class LaunchesResponse(
+data class LaunchResponse(
     @SerializedName("docs")
-    val launches: List<LaunchDetailsResponse>,
+    val launches: List<Launch>,
     var page: Int?,
     var nextPage: Int?,
     var prevPage: Int?,
@@ -20,10 +21,14 @@ data class LaunchesResponse(
     var hasNextPage: Boolean?
 )
 
-data class LaunchDetailsResponse(
+@Entity
+data class Launch(
+    @PrimaryKey(autoGenerate = false)
     val id: String,
     val name: String?,
-    val links: Links?
+    val links: Links?,
+    @SerializedName("date_utc")
+    val date: Date
 )
 
 data class Links(

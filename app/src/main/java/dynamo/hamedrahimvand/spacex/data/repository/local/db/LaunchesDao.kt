@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import dynamo.hamedrahimvand.spacex.data.model.db_models.LaunchesEntity
+import dynamo.hamedrahimvand.spacex.data.model.Launch
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -15,12 +15,12 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface LaunchesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(launchesList: List<LaunchesEntity>)
+    suspend fun insert(launchesList: List<Launch>)
 
-    @Query("SELECT * FROM LaunchesEntity")
-    fun loadAllLaunches(): Flow<List<LaunchesEntity>>
+    @Query("SELECT * FROM launch")
+    fun loadAllLaunches(): Flow<List<Launch>>
 
-    @Query("DELETE FROM LaunchesEntity")
+    @Query("DELETE FROM launch")
     suspend fun deleteExpiredLaunches()
 
 }

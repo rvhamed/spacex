@@ -1,16 +1,13 @@
 package dynamo.hamedrahimvand.spacex.data.repository
 
-import dynamo.hamedrahimvand.spacex.data.model.db_models.LaunchesEntity
-import dynamo.hamedrahimvand.spacex.data.model.mapper.toLaunchesEntity
+import dynamo.hamedrahimvand.spacex.data.model.Launch
 import dynamo.hamedrahimvand.spacex.data.model.request_models.LaunchesRequestModel
-import dynamo.hamedrahimvand.spacex.data.model.response_models.LaunchesResponse
+import dynamo.hamedrahimvand.spacex.data.model.LaunchResponse
 import dynamo.hamedrahimvand.spacex.data.model.retrofit.Resource
 import dynamo.hamedrahimvand.spacex.data.repository.local.LocalDataSource
 import dynamo.hamedrahimvand.spacex.data.repository.local.db.AppPreferences
 import dynamo.hamedrahimvand.spacex.data.repository.remote.CloudDataSource
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -28,9 +25,9 @@ class RepositoryImpl @Inject constructor(
         isRefresh:Boolean,
         isForceFetch: Boolean,
         requestModel: LaunchesRequestModel
-    ): Flow<Resource<List<LaunchesEntity>>> {
-        return object : NetworkBoundResource<List<LaunchesEntity>, LaunchesResponse>() {
-            override suspend fun saveCallResult(item: Resource<LaunchesResponse?>) {
+    ): Flow<Resource<List<Launch>>> {
+        return object : NetworkBoundResource<List<Launch>, LaunchResponse>() {
+            override suspend fun saveCallResult(item: Resource<LaunchResponse?>) {
                 item.data?.let { launchesResponse ->
                     if(isRefresh){
                         deleteExpiredLaunches()
@@ -39,20 +36,17 @@ class RepositoryImpl @Inject constructor(
                     if (launchesResponse.hasNextPage == true) {
                         appPreferences.setLastPage(launchesResponse.page)
                     }
-                    val entityList = launchesResponse.launches.map {
-                        it.toLaunchesEntity()
-                    }
-                    localDataSource.insertLaunches(entityList)
+                    localDataSource.insertLaunches(launchesResponse.launches)
                 }
             }
 
-            override fun shouldFetch(data: List<LaunchesEntity>?): Boolean =
+            override fun shouldFetch(data: List<Launch>?): Boolean =
                 data.isNullOrEmpty() || isForceFetch
 
-            override suspend fun loadFromDb(): Flow<List<LaunchesEntity>> =
+            override suspend fun loadFromDb(): Flow<List<Launch>> =
                 localDataSource.loadLaunches()
 
-            override suspend fun createCall(): Flow<Resource<LaunchesResponse>> =
+            override suspend fun createCall(): Flow<Resource<LaunchResponse>> =
                 loadLaunchesAsync(requestModel)
 
         }.asFlow()

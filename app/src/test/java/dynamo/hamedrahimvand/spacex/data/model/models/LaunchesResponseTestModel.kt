@@ -1,4 +1,4 @@
-package dynamo.hamedrahimvand.spacex.data.model.response_models
+package dynamo.hamedrahimvand.spacex.data.model.models
 
 class LaunchesResponseTestModel(
     val id: String,

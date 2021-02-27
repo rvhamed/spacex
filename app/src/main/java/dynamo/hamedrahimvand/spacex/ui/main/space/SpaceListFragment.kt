@@ -2,6 +2,7 @@ package dynamo.hamedrahimvand.spacex.ui.main.space
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import dynamo.hamedrahimvand.spacex.R
@@ -28,9 +29,11 @@ class SpaceListFragment : BaseFragment<SpaceListViewModel>(), SpaceListCallback 
 
     companion object {
         private const val FULL_SCREEN_LOADING_STATE = "full_screen_loading_state"
+        private const val PROGRESS_LOADING_STATE = "progress_loading_state"
     }
 
-    var fullScreenLoadingState: FullScreenLoadingState?
+    //region View States
+    private var fullScreenLoadingState: FullScreenLoadingState?
         set(value) {
             viewModel.viewState.putSerializable(
                 FULL_SCREEN_LOADING_STATE,
@@ -39,6 +42,17 @@ class SpaceListFragment : BaseFragment<SpaceListViewModel>(), SpaceListCallback 
         }
         get() =
             viewModel.viewState.getSerializable(FULL_SCREEN_LOADING_STATE) as? FullScreenLoadingState
+
+    private var progressLoadingState: Boolean
+        set(value) {
+            viewModel.viewState.putBoolean(
+                PROGRESS_LOADING_STATE,
+                value
+            )
+        }
+        get() =
+            viewModel.viewState.getBoolean(PROGRESS_LOADING_STATE)
+    //endregion
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -50,6 +64,7 @@ class SpaceListFragment : BaseFragment<SpaceListViewModel>(), SpaceListCallback 
 
     override fun onStop() {
         fullScreenLoadingState = binding.fslLoading.prevState
+        progressLoadingState = binding.pbLoading.isVisible
         super.onStop()
     }
 
@@ -57,7 +72,7 @@ class SpaceListFragment : BaseFragment<SpaceListViewModel>(), SpaceListCallback 
         fullScreenLoadingState?.let { fslState ->
             binding.fslLoading.setState(fslState)
         }
-
+        if (progressLoadingState) binding.pbLoading.show() else binding.pbLoading.hide(false)
 
         with(binding.rvLaunches) {
             addItemDecoration(MarginItemDecoration(0, 7, 17, 7))

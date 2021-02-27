@@ -5,7 +5,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dynamo.hamedrahimvand.spacex.common.base.BaseViewModel
 import dynamo.hamedrahimvand.spacex.common.livedata.EventLiveData
 import dynamo.hamedrahimvand.spacex.data.model.retrofit.Resource
-import dynamo.hamedrahimvand.spacex.data.model.ui_models.LaunchItem
+import dynamo.hamedrahimvand.spacex.data.model.Launch
 import dynamo.hamedrahimvand.spacex.data.repository.local.db.AppPreferences
 import dynamo.hamedrahimvand.spacex.data.usecase.LoadLaunchesUseCase
 import javax.inject.Inject
@@ -24,8 +24,8 @@ class SpaceListViewModel @Inject constructor(
 
     var viewState: Bundle = Bundle()
 
-    private var _launchItemLiveData: EventLiveData<Resource<List<LaunchItem>>> = EventLiveData()
-    var launchesLiveData = _launchItemLiveData
+    private var _launchLiveData: EventLiveData<Resource<List<Launch>>> = EventLiveData()
+    var launchesLiveData = _launchLiveData
 
     init {
         loadLaunches(true)
@@ -48,7 +48,7 @@ class SpaceListViewModel @Inject constructor(
         }
         loadLaunchesUseCase.isRefresh = isRefresh
         loadLaunchesUseCase.isForceFetch = isNextPage
-        loadData(loadLaunchesUseCase, _launchItemLiveData)
+        loadData(loadLaunchesUseCase, _launchLiveData)
     }
 
 }

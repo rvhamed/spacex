@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dynamo.hamedrahimvand.spacex.R
 import dynamo.hamedrahimvand.spacex.common.extensions.loadUrl
-import dynamo.hamedrahimvand.spacex.data.model.ui_models.LaunchItem
+import dynamo.hamedrahimvand.spacex.data.model.Launch
 import dynamo.hamedrahimvand.spacex.databinding.ItemLaunchesBinding
 
 /**
@@ -16,19 +16,19 @@ import dynamo.hamedrahimvand.spacex.databinding.ItemLaunchesBinding
  *@since 2/26/21
  */
 class SpaceListAdapter(val spaceListCallback: SpaceListCallback) :
-    ListAdapter<LaunchItem, SpaceListAdapter.SpaceListViewHolder>(SELECTION_COMPARATOR) {
+    ListAdapter<Launch, SpaceListAdapter.SpaceListViewHolder>(SELECTION_COMPARATOR) {
 
     companion object {
-        private val SELECTION_COMPARATOR = object : DiffUtil.ItemCallback<LaunchItem>() {
+        private val SELECTION_COMPARATOR = object : DiffUtil.ItemCallback<Launch>() {
             override fun areItemsTheSame(
-                oldItem: LaunchItem,
-                newItem: LaunchItem
+                oldItem: Launch,
+                newItem: Launch
             ): Boolean = oldItem.id == newItem.id
 
 
             override fun areContentsTheSame(
-                oldItem: LaunchItem,
-                newItem: LaunchItem
+                oldItem: Launch,
+                newItem: Launch
             ): Boolean = oldItem == newItem
         }
     }
@@ -56,7 +56,7 @@ class SpaceListAdapter(val spaceListCallback: SpaceListCallback) :
             with(itemBinding) {
                 tvName.text = launch.name
                 ivAvatar.loadUrl(
-                    launch.smallIcon,
+                    launch.links?.patch?.small,
                     R.drawable.ic_rocket_placeholder,
                     R.drawable.ic_rocket_placeholder
                 )

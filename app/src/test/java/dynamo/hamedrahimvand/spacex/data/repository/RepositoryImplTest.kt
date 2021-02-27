@@ -1,7 +1,7 @@
 package dynamo.hamedrahimvand.spacex.data.repository
 
 import dynamo.hamedrahimvand.spacex.data.model.ui_models.LaunchesTestModel
-import dynamo.hamedrahimvand.spacex.data.model.response_models.LaunchesResponseTestModel
+import dynamo.hamedrahimvand.spacex.data.model.models.LaunchesResponseTestModel
 import dynamo.hamedrahimvand.spacex.data.model.retrofit.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

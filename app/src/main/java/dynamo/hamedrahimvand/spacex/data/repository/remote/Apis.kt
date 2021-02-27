@@ -1,7 +1,7 @@
 package dynamo.hamedrahimvand.spacex.data.repository.remote
 
 import dynamo.hamedrahimvand.spacex.data.model.request_models.LaunchesRequestModel
-import dynamo.hamedrahimvand.spacex.data.model.response_models.LaunchesResponse
+import dynamo.hamedrahimvand.spacex.data.model.LaunchResponse
 import dynamo.hamedrahimvand.spacex.data.model.retrofit.Resource
 import kotlinx.coroutines.flow.Flow
 import retrofit2.http.Body
@@ -15,6 +15,6 @@ import retrofit2.http.POST
 interface Apis {
 
     @POST("launches/query")
-    fun loadLaunches(@Body launchesRequestModel: LaunchesRequestModel): Flow<Resource<LaunchesResponse>>
+    fun loadLaunches(@Body launchesRequestModel: LaunchesRequestModel): Flow<Resource<LaunchResponse>>
 
 }

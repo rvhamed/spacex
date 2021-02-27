@@ -18,6 +18,7 @@ fun ImageView.loadUrl(
         .load(url)
         .placeholder(placeholder)
         .error(error)
+        .override(300,300)
         .into(this)
 }
 

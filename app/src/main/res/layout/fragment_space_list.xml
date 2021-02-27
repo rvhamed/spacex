@@ -31,7 +31,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:spanCount="2"
+                app:spanCount="@integer/grid_span_count"
                 tools:listitem="@layout/item_launches" />
 
             <dynamo.hamedrahimvand.spacex.common.custom.FullScreenLoadingView
@@ -48,7 +48,7 @@
                 android:id="@+id/pbLoading"
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="4dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:indeterminate="true"
                 app:layout_constraintBottom_toBottomOf="parent"

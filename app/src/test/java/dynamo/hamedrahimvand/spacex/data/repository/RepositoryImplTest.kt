@@ -53,10 +53,10 @@ class RepositoryImplTest {
             val set = networkBoundResource.asFlow().take(2).toList()
             set.forEachIndexed { index, resource ->
                 when (index) {
-                    0 -> {
+                    0,1 -> {
                         assertThat(resource.status, equalTo(Resource.Status.LOADING))
                     }
-                    1 -> {
+                    2 -> {
                         assertThat(resource.status, `is`(equalTo(Resource.Status.SUCCESS)))
                         assertThat(resource.data, `is`(nullValue()))
                     }

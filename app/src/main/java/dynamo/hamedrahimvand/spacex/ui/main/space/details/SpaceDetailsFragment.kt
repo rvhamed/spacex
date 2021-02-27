@@ -26,7 +26,7 @@ class SpaceDetailsFragment : BaseFragment<SpaceDetailsViewModel>() {
 
     override fun setupView() {
         binding.ivLarge.loadUrl(
-            args.launch.links?.patch?.large,
+            args.launch.links?.patch?.small,
             R.drawable.ic_rocket_placeholder,
             R.drawable.ic_rocket_placeholder
         )

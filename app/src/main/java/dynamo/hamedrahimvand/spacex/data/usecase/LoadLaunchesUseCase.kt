@@ -5,11 +5,8 @@ import dynamo.hamedrahimvand.spacex.data.model.request_models.Options
 import dynamo.hamedrahimvand.spacex.data.model.retrofit.Resource
 import dynamo.hamedrahimvand.spacex.data.model.ui_models.LaunchItem
 import dynamo.hamedrahimvand.spacex.data.repository.Repository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.joinAll
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -30,14 +27,13 @@ class LoadLaunchesUseCase @Inject constructor(private val repository: Repository
         get() = LaunchesRequestModel(Options(LIMIT, nextPage))
 
     override suspend fun loadData(): Flow<Resource<List<LaunchItem>>> {
-        val flow = repository.loadLaunches(isRefresh,isForceFetch, requestModel).map { resource ->
+        return repository.loadLaunches(isRefresh, isForceFetch, requestModel)
+            .also { isForceFetch = false }.map { resource ->
             val data = resource.data?.map { launchesEntity ->
                 LaunchItem(launchesEntity.id, launchesEntity.name, launchesEntity.smallIcon)
             }
             Resource(resource.status, data, resource.error)
         }
-        isForceFetch = false
-        return flow
     }
 
 }

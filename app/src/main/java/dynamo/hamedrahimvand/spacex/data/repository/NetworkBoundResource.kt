@@ -17,9 +17,8 @@ import kotlinx.coroutines.withContext
  *@since 2/26/21
  */
 abstract class NetworkBoundResource<ResultType, RequestType>() {
-    private val jobMaps = mutableMapOf<String, Job>()
 
-    fun asFlow() = flow {
+    fun asFlow() = flow<Resource<ResultType>> {
         emit(Resource.loading())
 
         val dbValue = loadFromDb().first()
